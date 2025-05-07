@@ -2,39 +2,38 @@
 
 import { io } from 'socket.io-client';
 
-// Create a socket instance
-const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000', {
-  autoConnect: false,
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-});
+// Create a socket instance that will be connected when needed
+let socket: any;
 
-// Connect socket with authentication token
+// Only initialize the socket in the browser environment
+if (typeof window !== 'undefined') {
+  const socketUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000';
+  
+  socket = io(socketUrl, {
+    autoConnect: false,
+    withCredentials: true,
+  });
+} else {
+  // Create a mock implementation for server-side rendering
+  socket = {
+    on: () => {},
+    off: () => {},
+    emit: () => {},
+    connect: () => {},
+    disconnect: () => {},
+  };
+}
+
+// Export functions to manage socket
 export const connectSocket = (token: string) => {
-  // Set auth token
-  socket.auth = { token };
-  
-  // Connect to the socket server
-  socket.connect();
-  
-  // Log connection status
-  socket.on('connect', () => {
-    console.log('Socket connected:', socket.id);
-  });
-  
-  socket.on('connect_error', (error) => {
-    console.error('Socket connection error:', error);
-  });
-  
-  socket.on('disconnect', (reason) => {
-    console.log('Socket disconnected:', reason);
-  });
+  if (typeof window !== 'undefined' && socket) {
+    socket.auth = { token };
+    socket.connect();
+  }
 };
 
-// Disconnect socket
 export const disconnectSocket = () => {
-  if (socket.connected) {
+  if (typeof window !== 'undefined' && socket) {
     socket.disconnect();
   }
 };

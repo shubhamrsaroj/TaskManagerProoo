@@ -2,7 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  output: 'export', // Enable static exports for Netlify
+  output: 'export', // Static site generation
+  distDir: 'out',
   images: {
     unoptimized: true, // Required for static export
   },
