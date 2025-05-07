@@ -39,8 +39,10 @@ const io = new Server(httpServer, {
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true, // Allow cookies to be sent
+  origin: process.env.FRONTEND_URL || 'https://taskmanagerpro.netlify.app',
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 app.use(express.json());
 app.use(cookieParser()); // Add cookie parser middleware

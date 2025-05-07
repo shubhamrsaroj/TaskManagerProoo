@@ -1,10 +1,33 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Box, Container, Heading, Text, VStack, Spinner } from '@chakra-ui/react';
-import { FiBarChart2, FiPieChart, FiTrendingUp, FiClock, FiUsers, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
+import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react';
+import { FiBarChart2, FiPieChart, FiTrendingUp, FiClock, FiUsers, FiCheckCircle, FiAlertTriangle, FiLoader } from 'react-icons/fi';
 import { getUser } from '@/lib/auth';
 import api from '@/lib/api';
+
+// Create a custom spinner component since Chakra's Spinner is not available
+const Spinner = () => (
+  <Box
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    p={8}
+  >
+    <Box
+      as={FiLoader}
+      size="40px"
+      color="blue.500"
+      animation="spin 1s linear infinite"
+    />
+    <style jsx global>{`
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `}</style>
+  </Box>
+);
 
 // Analytics data interface
 interface AnalyticsData {
@@ -122,10 +145,7 @@ export default function ReportsPage() {
     return (
       <Container maxW="container.xl" py={8}>
         <Heading size="lg" mb={6}>Reports & Analytics</Heading>
-        <Box textAlign="center" py={10}>
-          <Spinner size="xl" color="blue.500" thickness="4px" />
-          <Text mt={4}>Loading analytics data...</Text>
-        </Box>
+        <Spinner />
       </Container>
     );
   }
